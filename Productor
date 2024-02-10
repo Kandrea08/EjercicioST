@@ -1,0 +1,34 @@
+package com.pruebas.sistemast;
+import javax.jms.*;
+
+public class Productor {
+    private QueueConnectionFactory connectionFactory;
+    private QueueConnection connection;
+    private QueueSession session;
+    private Queue cola;
+
+    public Productor() {
+        try {
+            connectionFactory = new org.apache.activemq.ActiveMQConnectionFactory("tcp://localhost:61616");
+            connection = connectionFactory.createQueueConnection();
+            session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+            cola = session.createQueue("TRANSACCIONES");
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void enviarMensaje(String mensaje) {
+        try {
+            connection.start();
+            QueueSender sender = session.createSender(cola);
+            TextMessage textMessage = session.createTextMessage();
+            textMessage.setText(mensaje);
+            sender.send(textMessage);
+            sender.close();
+            connection.stop();
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+}
