@@ -1,0 +1,20 @@
+package com.pruebas.sistemast;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class CacheProduct {
+    private Map<Integer, Product> cacheProducts;
+
+    public CacheProduct() {
+        this.cacheProducts = new HashMap<>();
+    }
+
+    public void addToCache(Product product) {
+        cacheProducts.put(product.getId(), product);
+    }
+
+    public Product getProductFromCache(int productId) {
+        return cacheProducts.get(productId);
+    }
+}
