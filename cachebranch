@@ -1,0 +1,20 @@
+package com.pruebas.sistemast;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class CacheBranch {
+    private Map<Integer, Branch> cacheBranches;
+
+    public CacheBranch() {
+        this.cacheBranches = new HashMap<>();
+    }
+
+    public void addToCache(Branch branch) {
+        cacheBranches.put(branch.getId(), branch);
+    }
+
+    public Branch getBranchFromCache(int branchId) {
+        return cacheBranches.get(branchId);
+    }
+}
