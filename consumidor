@@ -1,0 +1,45 @@
+package com.pruebas.sistemast;
+import javax.jms.*;
+
+
+public class Consumidor {
+    private QueueConnectionFactory connectionFactory;
+    private QueueConnection connection;
+    private QueueSession session;
+    private Queue cola;
+
+    public Consumidor() {
+        try {
+            connectionFactory = new org.apache.activemq.ActiveMQConnectionFactory("tcp://localhost:61616");
+            connection = connectionFactory.createQueueConnection();
+            session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+            cola = session.createQueue("TRANSACCIONES");
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void recibirMensajes() {
+        try {
+            connection.start();
+            QueueReceiver receiver = session.createReceiver(cola);
+            receiver.setMessageListener(new MessageListener() {
+                @Override
+                public void onMessage(Message message) {
+                    try {
+                        if (message instanceof TextMessage) {
+                            TextMessage textMessage = (TextMessage) message;
+                            String texto = textMessage.getText();
+                            // Procesar el mensaje (almacenar en la base de datos)
+                            System.out.println("Mensaje recibido: " + texto);
+                        }
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
+    }
+}
